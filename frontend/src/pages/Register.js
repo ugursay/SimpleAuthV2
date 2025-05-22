@@ -1,15 +1,39 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const isStrongPassword = (password) => {
+    return (
+      password.length >= 6 && /\d/.test(password) && /[a-zA-Z]/.test(password)
+    );
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
+    if (!isStrongPassword(password)) {
+      toast.error(
+        "şifre en az 6 karakter olmalı, içinde sayı ve harf bulunmalı."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Şifreler eşleşmiyor.");
+      return;
+    }
 
     try {
       const res = await axios.post("http://localhost:5000/api/register", {
@@ -18,15 +42,20 @@ const Register = () => {
         password,
       });
 
-      setMessage(res.data.message);
+      toast.success(res.data.message);
       setUsername("");
       setEmail("");
       setPassword("");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (err) {
-      setMessage(
+      toast.error(
         err.response?.data?.message || "Sunucudan bağımsız bir hata oluştu"
       );
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,11 +90,24 @@ const Register = () => {
             required
             className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 transition-transform duration-300 will-change-transform"
           />
+          <input
+            type="password"
+            placeholder="Yeni Şifre (Tekrar)"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 transition-transform transition-colors duration-300 will-change-transform"
+          />
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition-colors hover:scale-105 transition-transform duration-300 will-change-transform"
+            disabled={loading}
+            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors${
+              loading
+                ? "bg-green-300 cursor-not-allowed"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
           >
-            Kayıt Ol
+            {loading ? "Kayıt oluyor..." : "Kayıt Ol"}
           </button>
 
           <div className="mt-4 text-center hover:scale-105 transition-transform duration-300 will-change-transform">
@@ -77,11 +119,7 @@ const Register = () => {
             </Link>
           </div>
         </form>
-        {message && (
-          <p className="mt-4 text-center text-sm text-rose-500 bg-rose-100 px-4 py-2 rounded-lg shadow-sm hover:scale-105 transition-transform duration-300 will-change-transform">
-            {message}
-          </p>
-        )}
+        <ToastContainer />
       </div>
     </div>
   );
