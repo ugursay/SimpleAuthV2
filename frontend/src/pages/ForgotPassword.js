@@ -11,15 +11,16 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
 
     try {
       const res = await axios.post(
         "http://localhost:5000/api/forgot-password",
-        [email]
+        { email }
       );
       toast.success(res.data.message);
-      console.log("RESET LINK: ", res.data.resetLink);
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "bir hata oluştu");
@@ -46,7 +47,7 @@ const ForgotPassword = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors duration-300 will-change-transform${
+            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors duration-300 will-change-transform ${
               loading
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 hover:scale-105 transition-transform"
@@ -60,7 +61,9 @@ const ForgotPassword = () => {
           <Link
             to="/login"
             className="text-blue-600 font-semibold mt-2 hover:text-blue-800 transition-colors duration-300"
-          ></Link>
+          >
+            Giriş sayfasına dön
+          </Link>
         </div>
         <ToastContainer />
       </div>

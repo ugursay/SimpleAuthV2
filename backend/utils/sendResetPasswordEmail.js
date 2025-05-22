@@ -17,5 +17,5 @@ export const sendResetPasswordEmail = async (email, link) => {
     <a href="${link}">${link}</a>`,
   };
 
-  await tronsporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };

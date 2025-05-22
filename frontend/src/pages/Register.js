@@ -21,17 +21,21 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
 
     if (!isStrongPassword(password)) {
       toast.error(
         "şifre en az 6 karakter olmalı, içinde sayı ve harf bulunmalı."
       );
+      setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
       toast.error("Şifreler eşleşmiyor.");
+      setLoading(false);
       return;
     }
 
@@ -46,6 +50,7 @@ const Register = () => {
       setUsername("");
       setEmail("");
       setPassword("");
+      setConfirmPassword("");
       setTimeout(() => {
         navigate("/login");
       }, 1500);
@@ -60,7 +65,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm hover:scale-105 transition-transform duration-300 will-change-transform">
         <h2 className="text-2xl font-semibold mb-6 text-center bg-gray-100 rounded-xl py-2 hover:scale-105 transition-transform duration-300 will-change-transform">
           Kayıt Ol
@@ -88,6 +93,7 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="new-password"
             className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 transition-transform duration-300 will-change-transform"
           />
           <input
@@ -96,12 +102,13 @@ const Register = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            autoComplete="new-password"
             className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 transition-transform transition-colors duration-300 will-change-transform"
           />
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors${
+            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors ${
               loading
                 ? "bg-green-300 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"

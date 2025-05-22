@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import db from "../db.js";
 import { sendVerificaitionEmail } from "../utils/sendVerificaitionEmail.js";
+import { sendResetPasswordEmail } from "../utils/sendResetPasswordEmail.js";
 import crypto from "crypto";
 
 export const registerUser = async (req, res) => {
@@ -138,14 +139,14 @@ export const forgotPassword = async (req, res) => {
 
     const token = crypto.randomBytes(32).toString("hex");
 
-    const expires = new Date(Date.now() + 300000);
+    const expires = new Date(Date.now() + 5 * 60 * 1000); //5 DAKİKA
 
     await db.execute(
       "UPDATE users SET resetToken=?, resetTokenExpires=? WHERE email=?",
       [token, expires, email]
     );
 
-    const resetLink = "http://localhost:3000/reset-password/${token}";
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
     await sendResetPasswordEmail(email, resetLink);
 
     res.json({
@@ -162,7 +163,7 @@ export const resetPassword = async (req, res) => {
   const { newPassword } = req.body;
 
   try {
-    const { users } = await db.execute(
+    const [users] = await db.execute(
       "SELECT * FROM users where resetToken=? AND resetTokenExpires > NOW()",
       [token]
     );

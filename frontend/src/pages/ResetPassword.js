@@ -25,13 +25,17 @@ const ResetPassword = () => {
       toast.error(
         "şifre en az 6 karakter olmalı, içinde sayı ve harf bulunmalı."
       );
+      setLoading(false);
       return;
     }
 
     if (newPassword !== confirmPassword) {
       toast.error("Şifreler eşleşmiyor.");
+      setLoading(false);
       return;
     }
+
+    if (loading) return;
     setLoading(true);
     try {
       const res = await axios.post(
@@ -50,7 +54,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm hover:scale-105 transition-transform duration-300 will-change-transform">
         <h2 className="text-2xl font-semibold mb-6 text-center bg-gray-100 rounded-xl py-2 hover:scale-105 transition-transform duration-300 will-change-transform">
           Yeni Şifre Belirle
@@ -75,7 +79,7 @@ const ResetPassword = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors duration-300 will-change-transform${
+            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors duration-300 will-change-transform ${
               loading
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 hover:scale-105 transition-transform"

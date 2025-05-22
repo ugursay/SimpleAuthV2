@@ -3,7 +3,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import User from "./pages/User";
 
 function App() {
@@ -12,11 +17,12 @@ function App() {
       <div className="min-h-screen flex flex-col bg-gray-100">
         <main>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/User" element={<User />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="reset-password:token" element={<ResetPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
           </Routes>
         </main>
 

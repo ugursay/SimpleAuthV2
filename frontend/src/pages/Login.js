@@ -19,6 +19,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (loading) return;
+
     setLoading(true);
 
     try {
@@ -28,8 +30,9 @@ const Login = () => {
       });
 
       toast.success(res.data.message);
-      console.log("Token:", res.data.token);
       login({ email, token: res.data.token });
+      setEmail("");
+      setPassword("");
       setTimeout(() => {
         navigate("/user");
       }, 1500);
@@ -44,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm  hover:scale-105 transition-transform duration-300 will-change-transform">
         <h2 className="text-2xl font-semibold mb-6 text-center bg-gray-100 rounded-xl py-2 hover:scale-105 transition-transform duration-300 will-change-transform">
           Giriş Yap
@@ -69,12 +72,13 @@ const Login = () => {
               setPassword(e.target.value);
             }}
             required
+            autoComplete="current-password"
             className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500  hover:scale-105 transition-transform duration-300 will-change-transform"
           />
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors${
+            className={`w-full py-2 rounded-lg font-semibold text-white transition-colors ${
               loading
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
@@ -88,6 +92,14 @@ const Login = () => {
               className="text-blue-600 font-semibold mt-2 hover:text-blue-800 transition"
             >
               Hesabın yok mu?
+            </Link>
+          </div>
+          <div className="mt-2 text-center  hover:scale-105 transition-transform duration-300 will-change-transform">
+            <Link
+              to="/forgot-password"
+              className="text-red-600 font-semibold hover:text-red-800 transition"
+            >
+              Şifreni mi unuttun?
             </Link>
           </div>
         </form>
