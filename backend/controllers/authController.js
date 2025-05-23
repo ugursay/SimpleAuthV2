@@ -164,7 +164,7 @@ export const resetPassword = async (req, res) => {
 
   try {
     const [users] = await db.execute(
-      "SELECT * FROM users where resetToken=? AND resetTokenExpires > NOW()",
+      "SELECT * FROM users WHERE resetToken=? AND resetTokenExpires > NOW()",
       [token]
     );
 
@@ -177,7 +177,7 @@ export const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await db.execute(
-      "UPDATE users SET password=?, resetToken=NULL, resetTokenExpires=Null WHERE id=?",
+      "UPDATE users SET password=?, resetToken=NULL, resetTokenExpires=NULL WHERE id=?",
       [hashedPassword, users[0].id]
     );
 
