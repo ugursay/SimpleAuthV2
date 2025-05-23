@@ -12,6 +12,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const noTurkishChars = /^[a-zA-Z0-9@._-]*$/;
+
   const isStrongPassword = (password) => {
     return (
       password.length >= 6 && /\d/.test(password) && /[a-zA-Z]/.test(password)
@@ -75,7 +77,12 @@ const Register = () => {
             type="text"
             placeholder="Kullanıcı Adı"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (noTurkishChars.test(value)) {
+                setUsername(value);
+              }
+            }}
             required
             className="w-full px-4 py-2 border rounded-lg hover:ring-2 hover:ring-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 transition-transform duration-300 will-change-transform"
           />
